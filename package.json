@@ -1,0 +1,35 @@
+{
+  "name": "price-tracker",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rajkhare05/price-tracker.git"
+  },
+  "keywords": [],
+  "author": "Raj Khare",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rajkhare05/price-tracker/issues"
+  },
+  "homepage": "https://github.com/rajkhare05/price-tracker#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "mongoose": "^6.6.1",
+    "path": "^0.12.7",
+    "puppeteer": "^18.0.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
