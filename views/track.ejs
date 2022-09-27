@@ -7,9 +7,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <title>Track</title>
-  <style>
-
-  </style>
 </head>
 
 <body>
@@ -18,8 +15,9 @@
     <div class="text-container">
       <form action="/track" method="POST" class="form-group column display-5 col-md-12">
         <h2>Add New Track</h2> <br>
-        <label for="">Select Platform : </label> &nbsp;
-        <select name="platform" class="form-select" aria-label="Default select example">
+        <label for="">Platform : </label> &nbsp;
+        <select name="platform" class="form-select" aria-label="Default select example" required>
+          <option value="">select platform</option>
           <option value="amazon">Amazon</option>
           <option value="flipkart">Flipkart</option>
           <!-- <option value="">Myntra</option> -->
@@ -29,19 +27,20 @@
         </select>
         <br>
         <label for="">URL of the product :</label>
-        <input type="text" name="url" style="margin-left: 490px;" class="form-control w-25"> <br>
+        <input type="text" name="url" style="margin-left: 490px;" class="form-control w-25" required> <br>
         <label for="">Target price :</label>
-        <input type="number" name="targetPrice" style="margin-left: 490px" class="form-control w-25"> <br>
+        <input type="number" name="targetPrice" style="margin-left: 490px" class="form-control w-25" required> <br>
         <label for="">Original price :</label>
-        <input type="number" name="originalPrice" style="margin-left: 490px" class="form-control w-25"> <br>
+        <input type="number" name="originalPrice" style="margin-left: 490px" class="form-control w-25" required> <br>
         <!-- <input type="text" placeholder="min" style="width: 50px; border:none ;"> to <input type="text" placeholder="max"
           style="width: 50px; border: none;"> -->
-        <br>
         <div class="form-outline mb-4" style=" width:25%; text-align: center; margin-left: 490px;">
-          <label class="form-label" name="description" for="form4Example3">Description</label>
-          <textarea name="label" class="form-control" id="form4Example3" rows="4"></textarea>
+          <label class="form-label" name="description" for="form4Example3">Label</label>
+          <textarea name="label" class="form-control" id="form4Example3" rows="4" required></textarea>
         </div>
         <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-primary" type="button" onclick="location.href='/'">Go back</button>
+        <button class="btn btn-primary" type="reset">Reset</button>
         <br> <br>
       </form>
     </div>

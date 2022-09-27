@@ -2,15 +2,20 @@
 const mongoose = require('mongoose');
 const scraper = require('./scraper.js');
 const trackMod = require('./models/track.model');
+const sendEmail = require('./mail.js');
 require('dotenv').config();
 
-// const DB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/price-tracker';
-const DB_URI = 'mongodb://127.0.0.1:27017/price-tracker';
-const INTERVAL_TIME = process.env.INTERVAL_TIME || (1000 * 10) // default: 1hr
+const DB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/price-tracker';
+const INTERVAL_TIME = process.env.INTERVAL_TIME || (1000 * 10);
+const SENDER = process.env.USER_EMAIL;
+const PASSWORD = process.env.PASS;
 
-const getTrackData = async () => {
-    const data = await trackMod.find({});
-    return data;
+const HTMLMessage = (name, url, price) => {
+    return `<a href="${url}">${name}</a> price dropped to ${price}`
+}
+
+const textMessage = (name, url, price) => {
+    return `${name} price dropped to ${price}. Link: ${url}`;
 }
 
 const scrape = async (platform, url) => {
@@ -22,27 +27,22 @@ const scrape = async (platform, url) => {
     return scraper.dummy(url);
 }
 
-const getPrice = async (platform, url, targetPrice) => {
-    const product = await scrape(platform, url);
-    return product.price;
-}
-
 const run = async () => {
     try {
-        const trackData = await getTrackData();
-        if (trackData == null || trackData.length < 1) {
-            return;
-        }
-
+        const trackData = await trackMod.find({});
         for (const data of trackData) {
             for (const track of data.trackList) {
-                const scrapedPrice = await getPrice(track.platform, track.url, track.targetPrice);
-                console.log(scrapedPrice);
-                if (scrapedPrice <= track.targetPrice) {
-                    // update db and notify
-                    await trackMod.findOneAndUpdate({ email: data.email }, { originalPrice: scrapedPrice });
-                    // then delete
-                    // await trackMod.updateOne({ email: data.email }, { $pull: { url: track.url } });
+                if (track.hit) {
+                    const scrapedData = await scrape(track.platform, track.url);
+                    if (scrapedData.price <= track.targetPrice) {
+                        await trackMod.updateOne(
+                            { email: data.email, 'trackList.url': track.url },
+                            { $set: { 'trackList.$.originalPrice': Number(scrapedData.price), 'trackList.$.hit': false } }
+                        );
+                        const textMsg = textMessage(track.label, track.url, scrapedData.price);
+                        const HTMLMsg = HTMLMessage(track.label, track.url, scrapedData.price);
+                        sendEmail(SENDER, PASSWORD, data.email, 'Price Drop', HTMLMsg, textMsg);
+                    }
                 }
             }
         }
@@ -53,10 +53,12 @@ const run = async () => {
     }
 }
 
+console.log('worker.js is running');
+
 mongoose.connect(DB_URI)
 const connection = mongoose.connection;
 connection.once('open', () => {
-    console.log('DB connected');
+    console.log('worker DB connected !');
 });
 
 run();

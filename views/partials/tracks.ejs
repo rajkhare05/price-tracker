@@ -5,7 +5,14 @@
     </h5>
     <div class="card-body">
       <h5 class="card-title"><%= track.label %></h5>
-      <p class="card-text">Target Price: <%= track.targetPrice %> <br> Original Price: <%= track.originalPrice %> </p>
+      <p class="card-text">Target Price: <%= track.targetPrice %> <br>
+      Original Price: <%= track.originalPrice %> <br> Track:
+        <% if (track.hit) { %>
+          <span class="active-track">Active</span>
+        <% } else { %>
+          <span class="inactive-track">Inactive</span>
+        <% } %>
+      </p>
       <a href="<%= track.url %>" target="_blank" class="btn btn-primary">Go</a>
       <a href="#" onclick="(() => { navigator.clipboard.writeText('<%= track.url %>');})()" class="btn btn-primary">Copy</a>
     </div>

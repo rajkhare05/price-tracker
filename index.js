@@ -14,9 +14,8 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 const SECRET_KEY = process.env.SECRET_KEY || 'somesecretkey';
-const COOKIE_LIFETIME = process.env.COOKIE_LIFETIME || (1000 * 60 * 60 * 2); // default: 2 hr
-// const DB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/price-tracker';
-const DB_URI = 'mongodb://127.0.0.1:27017/price-tracker';
+const COOKIE_LIFETIME = process.env.COOKIE_LIFETIME || (1000 * 60 * 60 * 24);
+const DB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/price-tracker';
 
 // middlewares
 app.use(cors());
@@ -37,7 +36,7 @@ mongoose.connect(DB_URI);
 
 const connection = mongoose.connection;
 connection.once('open', () => {
-    console.log('DB connected successfully');
+    console.log('DB connected !');
 });
 
 const getTrackList = async (session, model) => {
@@ -131,8 +130,9 @@ app.route('/track')
             const targetPrice = Number(req.body.targetPrice);
             const originalPrice = Number(req.body.originalPrice);
             const label = req.body.label;
+            const hit = true;
 
-            const trackObj = { platform, url, targetPrice, originalPrice, label };
+            const trackObj = { platform, url, targetPrice, originalPrice, label, hit };
             const docExists = await trackMod.findOne({ email: email });
 
             if (docExists != null) {
